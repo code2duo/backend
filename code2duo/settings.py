@@ -17,6 +17,7 @@ from pathlib import Path
 import environ
 
 import google.auth
+from django.contrib.admin import AdminSite
 from google.cloud import secretmanager as sm
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -120,6 +121,7 @@ SWAGGER_SETTINGS = {
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -135,7 +137,7 @@ ROOT_URLCONF = "code2duo.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [os.path.join(BASE_DIR, "build")],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -284,6 +286,10 @@ if stageEnv not in os.environ or os.environ[stageEnv] == devStage:
     # https://docs.djangoproject.com/en/3.1/howto/static-files/
     STATIC_URL = "/static/"
     STATIC_ROOT = os.path.join(BASE_DIR, "static")
+    STATICFILES_DIRS = [
+        # Tell Django where to look for React's static files (css, js)
+        os.path.join(BASE_DIR, "build/static"),
+    ]
 elif os.environ[stageEnv] == prodStage:
     # Define static storage via django-storages[google]
     DEFAULT_FILE_STORAGE = "code2duo.gcloud.GoogleCloudMediaFileStorage"
@@ -304,5 +310,10 @@ elif os.environ[stageEnv] == prodStage:
     DOWNLOAD_ROOT = os.path.join(PROJECT_ROOT, "static/media/downloads")
     DOWNLOAD_URL = STATIC_URL + "media/downloads"
 
-    STATICFILES_DIRS = []
+    STATICFILES_DIRS = [
+        # Tell Django where to look for React's static files (css, js)
+        os.path.join(BASE_DIR, "build/static"),
+    ]
     GS_DEFAULT_ACL = "publicRead"
+
+AdminSite.site_header = 'Code2Duo Administration'
