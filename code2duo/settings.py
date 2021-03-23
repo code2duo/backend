@@ -89,10 +89,11 @@ THIRD_PARTY_APPS = [
     "corsheaders",
     "rest_framework",
     "drf_yasg",
-    "social_django",
 ]
 
-PROJECT_APPS = []
+PROJECT_APPS = [
+    "authentication",
+]
 
 INSTALLED_APPS = DJANGO_CORE_APPS + THIRD_PARTY_APPS + PROJECT_APPS
 
@@ -105,6 +106,9 @@ elif os.environ[stageEnv] == prodStage:
 
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "authentication.middleware.FirebaseAuthentication",
+    ),
     "DEFAULT_SCHEMA_CLASS": "rest_framework.schemas.coreapi.AutoSchema",
 }
 
@@ -124,7 +128,6 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     # third-party
     "corsheaders.middleware.CorsMiddleware",
-    "social_django.middleware.SocialAuthExceptionMiddleware",
 ]
 
 ROOT_URLCONF = "code2duo.urls"
@@ -149,10 +152,6 @@ TEMPLATES = [
 ]
 
 AUTHENTICATION_BACKENDS = ("social_core.backends.github.GithubOAuth2",)
-
-LOGIN_URL = 'login'
-LOGOUT_URL = 'logout'
-LOGIN_REDIRECT_URL = 'home'
 
 WSGI_APPLICATION = "code2duo.wsgi.application"
 
