@@ -316,4 +316,4 @@ elif os.environ[stageEnv] == prodStage:
     ]
     GS_DEFAULT_ACL = "publicRead"
 
-AdminSite.site_header = 'Code2Duo Administration'
+AdminSite.site_header = "Code2Duo Administration"
