@@ -1,29 +1,9 @@
-import os
-
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext as _
 from rest_framework import exceptions
 from rest_framework.authentication import BaseAuthentication, get_authorization_header
 
-import firebase_admin
-from firebase_admin import auth, credentials
-
-cred = credentials.Certificate(
-    {
-        "type": "service_account",
-        "project_id": os.environ.get("FIREBASE_PROJECT_ID"),
-        "private_key_id": os.environ.get("FIREBASE_PRIVATE_KEY_ID"),
-        "private_key": os.environ.get("FIREBASE_PRIVATE_KEY").replace("\\n", "\n"),
-        "client_email": os.environ.get("FIREBASE_CLIENT_EMAIL"),
-        "client_id": os.environ.get("FIREBASE_CLIENT_ID"),
-        "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-        "token_uri": "https://accounts.google.com/o/oauth2/token",
-        "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-        "client_x509_cert_url": os.environ.get("FIREBASE_CLIENT_CERT_URL"),
-    }
-)
-
-default_app = firebase_admin.initialize_app(cred)
+from firebase_admin import auth
 
 User = get_user_model()
 
@@ -53,9 +33,9 @@ class BaseFirebaseAuthentication(BaseAuthentication):
             msg = _("Invalid firebase ID token.")
             raise exceptions.AuthenticationFailed(msg)
         except (
-                auth.ExpiredIdTokenError,
-                auth.InvalidIdTokenError,
-                auth.RevokedIdTokenError,
+            auth.ExpiredIdTokenError,
+            auth.InvalidIdTokenError,
+            auth.RevokedIdTokenError,
         ):
             msg = _("Could not log in.")
             raise exceptions.AuthenticationFailed(msg)
@@ -70,7 +50,10 @@ class BaseFirebaseAuthentication(BaseAuthentication):
         """
         auth_header = get_authorization_header(request).split()
 
-        if not auth_header or auth_header[0].lower() != self.auth_header_prefix.lower().encode():
+        if (
+            not auth_header
+            or auth_header[0].lower() != self.auth_header_prefix.lower().encode()
+        ):
             return None
 
         if len(auth_header) == 1:
@@ -111,7 +94,7 @@ class BaseFirebaseAuthentication(BaseAuthentication):
         raise NotImplementedError(".get_user() must be overridden.")
 
     def create_user_from_firebase(
-            self, uid: str, firebase_user: auth.UserRecord
+        self, uid: str, firebase_user: auth.UserRecord
     ) -> User:
         """Creates a new user with firebase info"""
         raise NotImplementedError(".create_user_from_firebase() must be overridden.")
@@ -133,7 +116,7 @@ class FirebaseAuthentication(BaseFirebaseAuthentication):
         return User.objects.get(**{self.uid_field: uid})
 
     def create_user_from_firebase(
-            self, uid: str, firebase_user: auth.UserRecord
+        self, uid: str, firebase_user: auth.UserRecord
     ) -> User:
         fields = {self.uid_field: uid, "email": firebase_user.email}
 

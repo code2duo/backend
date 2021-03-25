@@ -90,6 +90,7 @@ THIRD_PARTY_APPS = [
     "corsheaders",
     "rest_framework",
     "drf_yasg",
+    "channels",
 ]
 
 PROJECT_APPS = [
@@ -156,6 +157,7 @@ TEMPLATES = [
 AUTHENTICATION_BACKENDS = ("social_core.backends.github.GithubOAuth2",)
 
 WSGI_APPLICATION = "code2duo.wsgi.application"
+ASGI_APPLICATION = "code2duo.asgi.application"
 
 if stageEnv not in os.environ or os.environ[stageEnv] == devStage:
     pass
