@@ -11,7 +11,7 @@ class Participant(models.Model):
         to=settings.AUTH_USER_MODEL, related_name="+", on_delete=models.CASCADE
     )
 
-    score = models.PositiveSmallIntegerField()
+    score = models.PositiveSmallIntegerField(default=0)
 
 
 class Team(models.Model):
@@ -23,4 +23,4 @@ class Team(models.Model):
         to=Participant, related_name="team", on_delete=models.CASCADE
     )
 
-    score = models.PositiveSmallIntegerField()
+    score = models.PositiveSmallIntegerField(default=0)
