@@ -5,6 +5,8 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
 from firebase_admin import auth
 
+from authentication.scripts import generate_username
+
 User = get_user_model()
 
 
@@ -12,7 +14,8 @@ class FirebaseAuthenticationMiddleware:
     """
     Custom middleware (insecure) that takes user IDs from the query string.
     """
-    uid_field = User.USERNAME_FIELD
+
+    uid_field = User.UID_FIELD
 
     def __init__(self, inner):
         # Store the ASGI application we were passed
@@ -27,15 +30,18 @@ class FirebaseAuthenticationMiddleware:
         firebase_token = parse_qs(scope["query_string"].decode())["token"][0]
         try:
             payload = auth.verify_id_token(firebase_token)
-            if payload["firebase"]["sign_in_provider"] == "anonymous" or not payload["email_verified"]:
+            if (
+                payload["firebase"]["sign_in_provider"] == "anonymous"
+                or not payload["email_verified"]
+            ):
                 raise TypeError
             uid = payload["uid"]
         except (
-                ValueError,
-                TypeError,
-                auth.ExpiredIdTokenError,
-                auth.InvalidIdTokenError,
-                auth.RevokedIdTokenError,
+            ValueError,
+            TypeError,
+            auth.ExpiredIdTokenError,
+            auth.InvalidIdTokenError,
+            auth.RevokedIdTokenError,
         ):
             scope["user"] = AnonymousUser()
             return await self.inner(scope, receive, send)
@@ -53,7 +59,11 @@ class FirebaseAuthenticationMiddleware:
             user = User.objects.get(**{self.uid_field: uid})
         except User.DoesNotExist:
             firebase_user: auth.UserRecord = auth.get_user(uid)
-            fields = {self.uid_field: uid, "email": firebase_user.email}
+            fields = {
+                self.uid_field: uid,
+                "email": firebase_user.email,
+                "username": generate_username(firebase_user.email),
+            }
             user = User.objects.create(**fields)
 
         return user

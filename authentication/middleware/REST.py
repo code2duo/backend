@@ -2,8 +2,9 @@ from django.contrib.auth import get_user_model
 from django.utils.translation import gettext as _
 from rest_framework import exceptions
 from rest_framework.authentication import BaseAuthentication, get_authorization_header
-
 from firebase_admin import auth
+
+from authentication.scripts import generate_username
 
 User = get_user_model()
 
@@ -15,7 +16,7 @@ class BaseFirebaseAuthentication(BaseAuthentication):
 
     www_authenticate_realm = "api"
     auth_header_prefix = "Bearer"
-    uid_field = User.USERNAME_FIELD
+    uid_field = User.UID_FIELD
 
     def authenticate(self, request):
         """
@@ -118,6 +119,10 @@ class FirebaseAuthentication(BaseFirebaseAuthentication):
     def create_user_from_firebase(
         self, uid: str, firebase_user: auth.UserRecord
     ) -> User:
-        fields = {self.uid_field: uid, "email": firebase_user.email}
+        fields = {
+            self.uid_field: uid,
+            "email": firebase_user.email,
+            "username": generate_username(firebase_user.email),
+        }
 
         return User.objects.create(**fields)
