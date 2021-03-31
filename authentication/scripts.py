@@ -11,7 +11,7 @@ def generate_username(email: str):
     User = get_user_model()
 
     email = email.split("@")[0]
-    name = unicodedata.normalize("NFKD", email.lower()).encode("ASCII", "ignore")
+    name = unicodedata.normalize("NFKD", email.lower())
     name = name.split(" ")
     lastname = name[-1]
     firstname = name[0]

@@ -14,7 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, re_path
+from django.urls import path, re_path, include
 
 from code2duo.views import render_react
 
@@ -22,7 +22,9 @@ admin = [
     path("admin/", admin.site.urls),
 ]
 
-api = []
+api = [
+    path("api/v1/", include("core.urls")),
+]
 
 react = [
     re_path(r"^$", render_react),
