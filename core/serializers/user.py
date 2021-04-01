@@ -22,4 +22,6 @@ class UserSerializer(serializers.ModelSerializer):
             "is_superuser",
             "is_active",
             "last_login",
+            "groups",
+            "user_permissions",
         ]
