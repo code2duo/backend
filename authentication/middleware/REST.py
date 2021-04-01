@@ -14,8 +14,7 @@ class BaseFirebaseAuthentication(BaseAuthentication):
     Base implementation of token based authentication using firebase.
     """
 
-    www_authenticate_realm = "api"
-    auth_header_prefix = "Bearer"
+    auth_header_prefix = "Token"
     uid_field = User.UID_FIELD
 
     def authenticate(self, request):
@@ -101,9 +100,7 @@ class BaseFirebaseAuthentication(BaseAuthentication):
         raise NotImplementedError(".create_user_from_firebase() must be overridden.")
 
     def authenticate_header(self, request):
-        return '{} realm="{}"'.format(
-            self.auth_header_prefix, self.www_authenticate_realm
-        )
+        return self.auth_header_prefix
 
 
 class FirebaseAuthentication(BaseFirebaseAuthentication):
