@@ -5,5 +5,5 @@ The main repository containing code for backend of Code2Duo.
 ## Export .env
 
 ```shell
-eval $(cat .env)
+eval $(cat .env) python manage.py <options>
 ```

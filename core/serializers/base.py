@@ -1,5 +1,3 @@
-from enum import Enum
-
 from rest_framework import serializers
 
 
@@ -10,10 +8,10 @@ class EnumField(serializers.Field):
 
     choices = None
 
-    def __init__(self, choices, allow_blank=False, *args, **kwargs):
-        super().__init__(args, kwargs)
+    def __init__(self, choices, allow_blank=False, **kwargs):
         self.choices = choices
         self.allow_blank = allow_blank
+        super().__init__(**kwargs)
 
     def to_internal_value(self, data):
         if data == '' and self.allow_blank:

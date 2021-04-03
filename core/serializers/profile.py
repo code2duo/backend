@@ -13,8 +13,8 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     contests = ContestSerializer(many=True, read_only=True)
 
-    programming_lang = EnumField(choices=Profile.ProgrammingLanguageChoices)
+    programming_lang = EnumField(choices=Profile.ProgrammingLanguageChoices, required=False)
 
     class Meta:
         model = Profile
-        exclude = ["id", "user"]
+        exclude = ["id", ]
