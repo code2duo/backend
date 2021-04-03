@@ -14,15 +14,15 @@ class EnumField(serializers.Field):
         super().__init__(**kwargs)
 
     def to_internal_value(self, data):
-        if data == '' and self.allow_blank:
-            return ''
+        if data == "" and self.allow_blank:
+            return ""
 
         try:
             return self.choices[data]
         except KeyError:
-            self.fail('invalid_choice', input=data)
+            self.fail("invalid_choice", input=data)
 
     def to_representation(self, value):
-        if value in ('', None):
+        if value in ("", None):
             return value
         return self.choices(value).name

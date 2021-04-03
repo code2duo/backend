@@ -109,7 +109,9 @@ elif os.environ[stageEnv] == prodStage:
         INSTALLED_APPS += ["code2duo"]  # for custom data migration
 
 REST_FRAMEWORK = {
-    "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated", ],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
+    ],
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "authentication.middleware.FirebaseAuthentication",
     ],

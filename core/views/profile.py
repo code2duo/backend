@@ -21,6 +21,7 @@ class CreateProfile(CreateAPIView):
     """
     Create Profile API
     """
+
     serializer_class = ProfileSerializer
 
     @swagger_auto_schema(request_body=ProfileSerializer)
@@ -30,5 +31,4 @@ class CreateProfile(CreateAPIView):
         user.last_name = request.data["last_name"]
         user.save()
         request.data["user"] = request.user.pk
-        print(request.data)
         return super().create(request, *args, **kwargs)
