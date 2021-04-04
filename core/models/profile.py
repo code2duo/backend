@@ -28,6 +28,15 @@ class Profile(models.Model):
         JAVA = 3
         PYTHON = 4
 
+    class LevelChoices(models.IntegerChoices):
+        """
+        Level Choices
+        """
+
+        NOOB = 1
+        INTERMEDIATE = 2
+        PRO = 3
+
     user = models.OneToOneField(
         to=settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING, related_name="profile"
     )
@@ -47,3 +56,9 @@ class Profile(models.Model):
     rank = models.PositiveIntegerField(blank=True, null=True)
     no_of_questions_solved = models.IntegerField(default=0)
     no_of_contests = models.IntegerField(default=0)
+
+    level = models.PositiveSmallIntegerField(
+        choices=LevelChoices.choices, blank=True, null=True
+    )
+
+    is_searching = models.BooleanField(default=False)
