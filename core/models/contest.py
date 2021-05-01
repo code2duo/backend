@@ -1,7 +1,9 @@
 from django.db import models
 
+from code2duo import settings
 from .question import Question
 from .team import Team
+from .enums import MatchTypeChoices
 
 
 class Contest(models.Model):
@@ -9,15 +11,11 @@ class Contest(models.Model):
     Contest DB Model
     """
 
-    class MatchTypeChoices(models.IntegerChoices):
-        """
-        Match Type Choices
-        """
+    room_id = models.CharField(max_length=12, null=True, blank=True, unique=True)
 
-        ONEvONE = 1
-        TWOvTWO = 2
+    team_1 = models.ForeignKey(to=Team, on_delete=models.CASCADE, related_name="+")
+    team_2 = models.ForeignKey(to=Team, on_delete=models.CASCADE, related_name="+")
 
-    teams = models.ForeignKey(to=Team, on_delete=models.CASCADE, related_name="contest")
     questions = models.ManyToManyField(to=Question, related_name="contests")
 
     match_type = models.PositiveSmallIntegerField(
@@ -29,6 +27,20 @@ class Contest(models.Model):
     # this can be max start_time + duration (in minutes) but can be less if teams quit early
     end_time = models.DateTimeField(null=True, blank=True)
 
-    duration = models.PositiveSmallIntegerField(default=30)  # in minutes
+    duration = models.PositiveSmallIntegerField(default=60)  # in minutes
 
     winner = models.SmallIntegerField(null=True, blank=True)
+
+    is_ongoing = models.BooleanField(default=True)
+
+
+class Searching(models.Model):
+    """
+    Searching DB Model
+    """
+
+    room_name = models.CharField(max_length=12, unique=True)
+    user = models.ForeignKey(
+        to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="+"
+    )
+    type = models.PositiveSmallIntegerField(choices=MatchTypeChoices.choices, default=MatchTypeChoices.ONEvONE)

@@ -2,40 +2,13 @@ from django.conf import settings
 from django.db import models
 
 from .contest import Contest
+from .enums import SexChoices, ProgrammingLanguageChoices, LevelChoices
 
 
 class Profile(models.Model):
     """
     Profile Model
     """
-
-    class SexChoices(models.IntegerChoices):
-        """
-        Sex choices
-        """
-
-        MALE = 1
-        FEMALE = 2
-        OTHERS = 3
-
-    class ProgrammingLanguageChoices(models.IntegerChoices):
-        """
-        Programming Languages Choices
-        """
-
-        C = 1
-        CPP = 2
-        JAVA = 3
-        PYTHON = 4
-
-    class LevelChoices(models.IntegerChoices):
-        """
-        Level Choices
-        """
-
-        NOOB = 1
-        INTERMEDIATE = 2
-        PRO = 3
 
     user = models.OneToOneField(
         to=settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING, related_name="profile"

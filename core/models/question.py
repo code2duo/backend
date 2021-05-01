@@ -1,6 +1,7 @@
 from django.db import models
 
 from .testcase import TestCase
+from .enums import LevelChoices
 
 
 class Question(models.Model):
@@ -14,3 +15,5 @@ class Question(models.Model):
 
     question = models.TextField()
     example = models.TextField()
+
+    level = models.PositiveSmallIntegerField(choices=LevelChoices.choices)

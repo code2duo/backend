@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from core.models import Contest
+from core.models.enums import MatchTypeChoices
 
 from .base import EnumField
 from .team import TeamSerializer
@@ -15,7 +16,7 @@ class ContestSerializer(serializers.ModelSerializer):
     teams = TeamSerializer(many=True)
     questions = QuestionSerializer(many=True)
 
-    match_type = EnumField(choices=Contest.MatchTypeChoices)
+    match_type = EnumField(choices=MatchTypeChoices.choices)
 
     class Meta:
         model = Contest
