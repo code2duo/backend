@@ -68,11 +68,11 @@ elif os.environ[stageEnv] == prodStage:
     env.read_env(io.StringIO(payload))
     SECRET_KEY = env("SECRET_KEY")
     ALLOWED_HOSTS = [
-        "coderunner-2bn4xipkxa-uc.a.run.app",
-        "app.code2duo.co",
+        "code2duo-2bn4xipkxa-uc.a.run.app",
+        "api.code2duo.co",
     ]
     # Default false. True allows default landing pages to be visible
-    DEBUG = bool(env("DEBUG"))
+    DEBUG = False
 
 # Application definition
 
@@ -262,26 +262,19 @@ if (
     client_email = os.environ.get("FIREBASE_CLIENT_EMAIL")
     client_id = os.environ.get("FIREBASE_CLIENT_ID")
     client_x509_cert_url = os.environ.get("FIREBASE_CLIENT_CERT_URL")
-elif os.environ[stageEnv] == prodStage:
-    project_id = env("FIREBASE_PROJECT_ID")
-    private_key_id = env("FIREBASE_PRIVATE_KEY_ID")
-    private_key = env("FIREBASE_PRIVATE_KEY").replace("\\n", "\n")
-    client_email = env("FIREBASE_CLIENT_EMAIL")
-    client_id = env("FIREBASE_CLIENT_ID")
-    client_x509_cert_url = env("FIREBASE_CLIENT_CERT_URL")
 
-FIREBASE_CONFIG = {
-    "type": "service_account",
-    "project_id": project_id,
-    "private_key_id": private_key_id,
-    "private_key": private_key,
-    "client_email": client_email,
-    "client_id": client_id,
-    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-    "token_uri": "https://accounts.google.com/o/oauth2/token",
-    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-    "client_x509_cert_url": client_x509_cert_url,
-}
+    FIREBASE_CONFIG = {
+        "type": "service_account",
+        "project_id": project_id,
+        "private_key_id": private_key_id,
+        "private_key": private_key,
+        "client_email": client_email,
+        "client_id": client_id,
+        "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+        "token_uri": "https://accounts.google.com/o/oauth2/token",
+        "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+        "client_x509_cert_url": client_x509_cert_url,
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -321,10 +314,6 @@ if stageEnv not in os.environ or os.environ[stageEnv] == devStage:
     # https://docs.djangoproject.com/en/3.1/howto/static-files/
     STATIC_URL = "/static/"
     STATIC_ROOT = os.path.join(BASE_DIR, "static")
-    STATICFILES_DIRS = [
-        # Tell Django where to look for React's static files (css, js)
-        os.path.join(BASE_DIR, "build/static"),
-    ]
 elif os.environ[stageEnv] == prodStage:
     # Define static storage via django-storages[google]
     DEFAULT_FILE_STORAGE = "code2duo.gcloud.GoogleCloudMediaFileStorage"
@@ -345,10 +334,7 @@ elif os.environ[stageEnv] == prodStage:
     DOWNLOAD_ROOT = os.path.join(PROJECT_ROOT, "static/media/downloads")
     DOWNLOAD_URL = STATIC_URL + "media/downloads"
 
-    STATICFILES_DIRS = [
-        # Tell Django where to look for React's static files (css, js)
-        os.path.join(BASE_DIR, "build/static"),
-    ]
+    STATICFILES_DIRS = []
     GS_DEFAULT_ACL = "publicRead"
 
 AdminSite.site_header = "Code2Duo Administration"
