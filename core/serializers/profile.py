@@ -14,9 +14,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     contests = ContestSerializer(many=True, read_only=True)
 
-    programming_lang = EnumField(
-        choices=ProgrammingLanguageChoices, required=False
-    )
+    programming_lang = EnumField(choices=ProgrammingLanguageChoices, required=False)
 
     class Meta:
         model = Profile

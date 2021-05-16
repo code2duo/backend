@@ -4,7 +4,6 @@ from core.models import Contest
 from core.models.enums import MatchTypeChoices
 
 from .base import EnumField
-from .team import TeamSerializer
 from .question import QuestionSerializer
 
 
@@ -13,7 +12,6 @@ class ContestSerializer(serializers.ModelSerializer):
     Contest Serializer
     """
 
-    teams = TeamSerializer(many=True)
     questions = QuestionSerializer(many=True)
 
     match_type = EnumField(choices=MatchTypeChoices.choices)

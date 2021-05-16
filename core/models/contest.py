@@ -1,8 +1,8 @@
 from django.db import models
 
 from code2duo import settings
-from .question import Question
-from .team import Team
+
+from .profile import Profile
 from .enums import MatchTypeChoices
 
 
@@ -13,10 +13,13 @@ class Contest(models.Model):
 
     room_id = models.CharField(max_length=12, null=True, blank=True, unique=True)
 
-    team_1 = models.ForeignKey(to=Team, on_delete=models.CASCADE, related_name="+")
-    team_2 = models.ForeignKey(to=Team, on_delete=models.CASCADE, related_name="+")
+    # team 1
+    participant_1 = models.ForeignKey(Profile, related_name="contest_1", on_delete=models.CASCADE, blank=True, null=True)
+    score_1 = models.PositiveSmallIntegerField(default=0)
 
-    questions = models.ManyToManyField(to=Question, related_name="contests")
+    # team 2
+    participant_2 = models.ForeignKey(Profile, related_name="contest_2", on_delete=models.CASCADE, blank=True, null=True)
+    score_2 = models.PositiveSmallIntegerField(default=0)
 
     match_type = models.PositiveSmallIntegerField(
         choices=MatchTypeChoices.choices,
@@ -43,4 +46,6 @@ class Searching(models.Model):
     user = models.ForeignKey(
         to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="+"
     )
-    type = models.PositiveSmallIntegerField(choices=MatchTypeChoices.choices, default=MatchTypeChoices.ONEvONE)
+    type = models.PositiveSmallIntegerField(
+        choices=MatchTypeChoices.choices, default=MatchTypeChoices.ONEvONE
+    )

@@ -1,7 +1,6 @@
 from django.conf import settings
 from django.db import models
 
-from .contest import Contest
 from .enums import SexChoices, ProgrammingLanguageChoices, LevelChoices
 
 
@@ -12,9 +11,6 @@ class Profile(models.Model):
 
     user = models.OneToOneField(
         to=settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING, related_name="profile"
-    )
-    contests = models.ForeignKey(
-        to=Contest, on_delete=models.CASCADE, null=True, blank=True
     )
 
     sex = models.PositiveSmallIntegerField(
