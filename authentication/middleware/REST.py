@@ -14,7 +14,7 @@ class BaseFirebaseAuthentication(BaseAuthentication):
     Base implementation of token based authentication using firebase.
     """
 
-    auth_header_prefix = "Token"
+    auth_header_prefix = "Bearer"
     uid_field = User.UID_FIELD
 
     def authenticate(self, request):
