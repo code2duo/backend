@@ -14,11 +14,23 @@ class Contest(models.Model):
     room_id = models.CharField(max_length=12, null=True, blank=True, unique=True)
 
     # team 1
-    participant_1 = models.ForeignKey(Profile, related_name="contest_1", on_delete=models.CASCADE, blank=True, null=True)
+    participant_1 = models.ForeignKey(
+        Profile,
+        related_name="contest_1",
+        on_delete=models.DO_NOTHING,
+        blank=True,
+        null=True,
+    )
     score_1 = models.PositiveSmallIntegerField(default=0)
 
     # team 2
-    participant_2 = models.ForeignKey(Profile, related_name="contest_2", on_delete=models.CASCADE, blank=True, null=True)
+    participant_2 = models.ForeignKey(
+        Profile,
+        related_name="contest_2",
+        on_delete=models.DO_NOTHING,
+        blank=True,
+        null=True,
+    )
     score_2 = models.PositiveSmallIntegerField(default=0)
 
     match_type = models.PositiveSmallIntegerField(
@@ -44,7 +56,7 @@ class Searching(models.Model):
 
     room_name = models.CharField(max_length=12, unique=True)
     user = models.ForeignKey(
-        to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="+"
+        to=settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING, related_name="+"
     )
     type = models.PositiveSmallIntegerField(
         choices=MatchTypeChoices.choices, default=MatchTypeChoices.ONEvONE
