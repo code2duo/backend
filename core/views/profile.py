@@ -1,10 +1,33 @@
 from django.contrib.auth import get_user_model
 from drf_yasg.utils import swagger_auto_schema
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework.generics import CreateAPIView, RetrieveAPIView
 
+from core.models import Profile
 from core.serializers import UserSerializer, ProfileSerializer
 
 User = get_user_model()
+
+
+class GetUsername(APIView):
+    def get(self, request, *args, **kwargs):
+        user: User = request.user
+        username = None
+
+        try:
+            _ = user.profile
+            username = user.username
+        except Profile.DoesNotExist:
+            pass
+
+        data = {"status": "OK", "message": {"username": username}}
+
+        return Response(
+            data=data,
+            status=status.HTTP_200_OK,
+        )
 
 
 class GetProfile(RetrieveAPIView):
