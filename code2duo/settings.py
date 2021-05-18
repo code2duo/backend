@@ -53,10 +53,13 @@ if (
     ]
 
     CORS_ORIGIN_ALLOW_ALL = False
-    CORS_ORIGIN_WHITELIST = ("http://localhost:3000",)
+    CORS_ORIGIN_WHITELIST = ["http://localhost:3000",]
     DEBUG = True
 
 elif os.environ[stageEnv] == prodStage:
+    CORS_ORIGIN_ALLOW_ALL = False
+    CORS_ORIGIN_WHITELIST = ["https://app.code2duo.co", "http://localhost:3000",]
+
     # Pull django-environ settings file, stored in Secret Manager
     SETTINGS_NAME = "code2duo_settings"
     _, project = google.auth.default()
