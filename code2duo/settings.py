@@ -253,11 +253,20 @@ if (
     or os.environ[stageEnv] == devStage
     or os.environ[stageEnv] == dockerStage
 ):
-    redis_host = os.environ.get("REDIS_HOST", "localhost")
+    redis_host = os.environ.get("REDIS_HOST", "127.0.0.1")
     redis_port = int(os.environ.get("REDIS_PORT", 6379))
 elif os.environ[stageEnv] == prodStage:
     redis_host = env("REDIS_HOST")
     redis_port = int(env("REDIS_PORT"))
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [(redis_host, redis_port)],
+        },
+    },
+}
 
 # FIREBASE CONFIG
 if (

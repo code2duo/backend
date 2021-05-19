@@ -61,3 +61,17 @@ class Searching(models.Model):
     type = models.PositiveSmallIntegerField(
         choices=MatchTypeChoices.choices, default=MatchTypeChoices.ONEvONE
     )
+
+
+class MatchRoom(models.Model):
+    """
+    Room DB Model
+    """
+
+    room_id = models.CharField(max_length=12, unique=True)
+    participant_1 = models.ForeignKey(
+        to=Profile, on_delete=models.DO_NOTHING, related_name="+", blank=True, null=True,
+    )
+    participant_2 = models.ForeignKey(
+        to=Profile, on_delete=models.DO_NOTHING, related_name="+", blank=True, null=True,
+    )
