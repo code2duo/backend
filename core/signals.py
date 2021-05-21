@@ -3,7 +3,7 @@ import random
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
 
-from .models import Searching
+from core.models import MatchRoom
 
 
 def random_choice(k: int):
@@ -16,7 +16,7 @@ def random_choice(k: int):
     return "".join(random.choices(alphabet, k=k))
 
 
-@receiver(pre_save, sender=Searching)
+@receiver(pre_save, sender=MatchRoom)
 def create_id_for_room(update_fields, **kwargs):
     """
     Adds the ID to the model
@@ -24,6 +24,6 @@ def create_id_for_room(update_fields, **kwargs):
     if update_fields is not None:
         # doing this to avoid multiple creation of rooms when updating details
         return
-    searching_obj: Searching = kwargs.get("instance")
+    match_room_obj: MatchRoom = kwargs.get("instance")
     room_id = random_choice(3) + "-" + random_choice(4) + "-" + random_choice(3)
-    searching_obj.room_name = room_id
+    match_room_obj.room_id = room_id

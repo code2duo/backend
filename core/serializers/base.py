@@ -8,14 +8,13 @@ class EnumField(serializers.Field):
 
     choices = None
 
-    def __init__(self, choices, allow_blank=False, **kwargs):
+    def __init__(self, choices, *args, **kwargs):
         self.choices = choices
-        self.allow_blank = allow_blank
-        super().__init__(**kwargs)
+        super(EnumField, self).__init__(*args, **kwargs)
 
     def to_internal_value(self, data):
-        if data == "" and self.allow_blank:
-            return ""
+        if data is None:
+            return None
 
         try:
             return self.choices[data]
@@ -23,6 +22,7 @@ class EnumField(serializers.Field):
             self.fail("invalid_choice", input=data)
 
     def to_representation(self, value):
-        if value in ("", None):
-            return value
+        if value is None:
+            return None
+
         return self.choices(value).name

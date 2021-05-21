@@ -14,7 +14,7 @@ class ContestSerializer(serializers.ModelSerializer):
 
     questions = QuestionSerializer(many=True)
 
-    match_type = EnumField(choices=MatchTypeChoices.choices)
+    match_type = EnumField(choices=MatchTypeChoices)
 
     class Meta:
         model = Contest

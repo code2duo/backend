@@ -14,7 +14,7 @@ class QuestionSerializer(serializers.ModelSerializer):
 
     test_cases = TestCaseSerializer(many=True)
 
-    level = EnumField(choices=LevelChoices.choices, required=True)
+    level = EnumField(choices=LevelChoices, required=True)
 
     class Meta:
         model = Question
