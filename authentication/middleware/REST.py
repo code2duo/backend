@@ -1,12 +1,29 @@
-from django.contrib.auth import get_user_model
+from django.apps import apps
+from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import gettext as _
 from rest_framework import exceptions
 from rest_framework.authentication import BaseAuthentication, get_authorization_header
 from firebase_admin import auth
 
 from authentication.scripts import generate_username
+from code2duo import settings
 
-User = get_user_model()
+
+def get_model(name: str):
+    """
+    Return the model that is active in this project.
+    """
+    try:
+        app_label, model_name = name.split(".")
+        return apps.get_model(app_label=app_label, model_name=model_name, require_ready=False)
+    except ValueError:
+        raise ImproperlyConfigured(f"{name} must be of the form 'app_label.model_name'")
+    except LookupError:
+        raise ImproperlyConfigured(f"{name} refers to model that has not been installed")
+
+
+User = get_model(settings.AUTH_USER_MODEL)
+Profile = get_model(settings.PROFILE_USER_MODEL)
 
 
 class BaseFirebaseAuthentication(BaseAuthentication):
@@ -116,10 +133,20 @@ class FirebaseAuthentication(BaseFirebaseAuthentication):
     def create_user_from_firebase(
         self, uid: str, firebase_user: auth.UserRecord
     ) -> User:
+        names = firebase_user.display_name.split()
+
         fields = {
             self.uid_field: uid,
             "email": firebase_user.email,
             "username": generate_username(firebase_user.email),
+            "first_name": names[0],
+            "last_name": names[-1],
         }
 
-        return User.objects.create(**fields)
+        user = User.objects.create(**fields)
+        fields = {
+            "user": user,
+            "profile_img": firebase_user.photo_url,
+        }
+        _ = Profile.objects.create(**fields)
+        return user

@@ -21,6 +21,7 @@ django_asgi_app = get_asgi_application()
 from channels.routing import ProtocolTypeRouter, URLRouter
 
 from authentication.middleware import FirebaseAuthenticationMiddlewareStack
+from core.consumers import MatchMakingConsumer
 
 application = ProtocolTypeRouter(
     {
@@ -29,7 +30,7 @@ application = ProtocolTypeRouter(
         "websocket": FirebaseAuthenticationMiddlewareStack(
             URLRouter(
                 [
-                    # path("ws/canvas/<str:room_id>/", CanvasConsumer.as_asgi()),
+                    path("ws/room/<str:room_id>/", MatchMakingConsumer.as_asgi()),
                 ]
             )
         ),

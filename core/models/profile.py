@@ -27,7 +27,7 @@ class Profile(models.Model):
     no_of_contests = models.IntegerField(default=0)
 
     level = models.PositiveSmallIntegerField(
-        choices=LevelChoices.choices, blank=True, null=True
+        choices=LevelChoices.choices, blank=True, null=True, default=LevelChoices.NOOB,
     )
 
     is_searching = models.BooleanField(default=False)

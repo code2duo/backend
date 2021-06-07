@@ -1,1 +1,1 @@
-from .matchmaking import *
+from .link_matchmaking import *

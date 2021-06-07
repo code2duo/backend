@@ -3,6 +3,7 @@ from django.db import models
 from code2duo import settings
 
 from .profile import Profile
+from .question import Question
 from .enums import MatchTypeChoices
 
 
@@ -12,6 +13,8 @@ class Contest(models.Model):
     """
 
     room_id = models.CharField(max_length=12, null=True, blank=True, unique=True)
+
+    questions = models.ManyToManyField(Question, related_name="contest", blank=True)
 
     # team 1
     participant_1 = models.ForeignKey(
@@ -61,3 +64,20 @@ class Searching(models.Model):
     type = models.PositiveSmallIntegerField(
         choices=MatchTypeChoices.choices, default=MatchTypeChoices.ONEvONE
     )
+
+
+class MatchRoom(models.Model):
+    """
+    Room DB Model
+    """
+
+    room_id = models.CharField(max_length=12, unique=True)
+    participant_1 = models.ForeignKey(
+        to=Profile, on_delete=models.DO_NOTHING, related_name="+", blank=True, null=True,
+    )
+    participant_2 = models.ForeignKey(
+        to=Profile, on_delete=models.DO_NOTHING, related_name="+", blank=True, null=True,
+    )
+
+    def __str__(self):
+        return f"<MatchRoom(room_id={self.room_id})>"
