@@ -108,6 +108,7 @@ PROJECT_APPS = [
 INSTALLED_APPS = DJANGO_CORE_APPS + THIRD_PARTY_APPS + PROJECT_APPS
 
 AUTH_USER_MODEL = "authentication.User"
+PROFILE_USER_MODEL = "core.Profile"
 
 if stageEnv not in os.environ or os.environ[stageEnv] == devStage:
     pass
